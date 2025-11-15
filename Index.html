@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પર્યાવરણને અનુકૂળ દિવાળી</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* બેઝિક સેટઅપ */
+        body {
+            background-color: #0d001a; /* ઘેરો જાંબલી/રાત્રીનો રંગ */
+            color: #e0e0e0; /* થોડો ગરમ સફેદ ટેક્સ્ટ */
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #ffc400;
+            text-shadow: 0 0 10px #ffc400;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: #c0c0c0; /* હેડિંગથી થોડો અલગ રંગ */
+        }
+
+        /* દીવાઓ માટેનું કન્ટેનર */
+        .diya-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px; /* દીવાઓ વચ્ચેનું અંતર */
+            padding: 20px;
+        }
+
+        /* એકલ દીવો */
+        .diya {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* મોબાઇલ પર બ્લુ હાઇલાઇટ દૂર કરે છે */
+        }
+        
+        /* કીબોર્ડ ફોકસ માટે */
+        .diya:focus {
+            outline: none; /* સ્ક્વેર (આઉટલાઇન) દૂર કર્યું */
+        }
+
+        /* દીવાનો આધાર (કોડિયું) */
+        .base {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 50px;
+            border-radius: 0 0 50px 50px; /* અર્ધ-ગોળાકાર */
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* દરેક દીવા માટે અનન્ય રંગો */
+        .diya-container .diya:nth-child(1) .base {
+            background-color: #e01a4f; /* રૂબી રેડ */
+        }
+        .diya-container .diya:nth-child(2) .base {
+            background-color: #00a878; /* એમેરાલ્ડ ગ્રીન */
+        }
+        .diya-container .diya:nth-child(3) .base {
+            background-color: #3a40c0; /* સેફાયર બ્લુ */
+        }
+        .diya-container .diya:nth-child(4) .base {
+            background-color: #f050b0; /* બ્રાઇટ પિંક */
+        }
+        .diya-container .diya:nth-child(5) .base {
+            background-color: #7b2cbf; /* ડીપ પર્પલ */
+        }
+
+
+        /* દીવાની વાટ */
+        .base::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 12px;
+            background-color: #333; /* બળ્યા વગરની વાટ */
+            border-radius: 4px 4px 0 0;
+            transition: background-color 0.3s ease;
+        }
+
+        /* દીવાની જ્યોત (શરૂઆતમાં છુપાયેલી) */
+        .flame {
+            position: absolute;
+            bottom: 60px; /* વાટની બરાબર ઉપર */
+            left: 50%;
+            transform: translateX(-50%) scale(0); /* શરૂઆતમાં છુપાયેલ */
+            transform-origin: bottom center;
+            width: 20px;
+            height: 30px;
+            background-color: #ff0000; /* લાલ રંગ */
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* જ્યોતનો આકાર */
+            box-shadow: 0 0 10px #ff0000, /* લાલ શેડો */
+                        0 0 20px #ff0000,
+                        0 0 30px #e00000, /* ઘેરો લાલ */
+                        0 0 40px #e00000;
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        /* જ્યારે દીવો પ્રગટાવવામાં આવે (.lit ક્લાસ ઉમેરાય) */
+        .diya.lit .flame {
+            transform: translateX(-50%) scale(1); /* જ્યોત દેખાય છે */
+            opacity: 1;
+            /* જ્યોતના ઝબકારા માટે એનિમેશન */
+            animation: flicker 0.6s infinite alternate ease-in-out;
+        }
+
+        /* પ્રગટાવેલ દીવાની વાટનો રંગ બદલવો */
+        .diya.lit .base::before {
+            background-color: #ff0000; /* સળગતી વાટનો લાલ રંગ */
+            box-shadow: 0 0 5px #ff0000;
+        }
+
+        /* જ્યોત ઝબકવાનું એનિમેશન (Flicker Animation) */
+        @keyframes flicker {
+            0% {
+                transform: translateX(-50%) scaleY(1) scaleX(1);
+                opacity: 0.9;
+                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #e00000;
+            }
+            50% {
+                transform: translateX(-52%) scaleY(0.95) scaleX(1.05);
+                opacity: 0.8;
+                box-shadow: 0 0 12px #ff0000, 0 0 25px #ff0000, 0 0 35px #e00000;
+            }
+            100% {
+                transform: translateX(-48%) scaleY(1.02) scaleX(0.98);
+                opacity: 1;
+                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 32px #e00000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>પર્યાવરણને અનુકૂળ દિવાળી</h1>
+        <p>આ દિવાળી, પ્રદૂષણ નહીં, પ્રકાશ ફેલાવો. દીવા પ્રગટાવવા માટે તેના પર ક્લિક કરો.</p>
+    </header>
+
+    <main>
+        <div class="diya-container">
+            <!-- તમે ઈચ્છો તેટલા દીવા ઉમેરી શકો છો --><div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+            
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+            
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // જ્યારે ડોક્યુમેન્ટ લોડ થઈ જાય ત્યારે આ સ્ક્રિપ્ટ ચલાવો
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // બધા દીવાઓને પસંદ કરો
+            const diyas = document.querySelectorAll('.diya');
+
+            // દરેક દીવા પર ઈવેન્ટ લિસનર ઉમેરો
+            diyas.forEach(diya => {
+                
+                // દીવાને પ્રગટાવવા/ઓલવવા માટેનું ફંક્શન
+                function toggleLight() {
+                    diya.classList.toggle('lit'); // .lit ક્લાસ ઉમેરો અથવા દૂર કરો
+                }
+
+                // ક્લિક ઈવેન્ટ (માઉસ અથવા ટચ)
+                diya.addEventListener('click', toggleLight);
+
+                // કીબોર્ડ ઈવેન્ટ (Enter અથવા Space કી માટે)
+                diya.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); // ડિફોલ્ટ સ્кроલિંગ અટકાવો
+                        toggleLight();
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>પર્યાવરણને અનુકૂળ દિવાળી</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* બેઝિક સેટઅપ */
+        body {
+            background-color: #0d001a; /* ઘેરો જાંબલી/રાત્રીનો રંગ */
+            color: #e0e0e0; /* થોડો ગરમ સફેદ ટેક્સ્ટ */
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #ffc400;
+            text-shadow: 0 0 10px #ffc400;
+        }
+
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: #c0c0c0; /* હેડિંગથી થોડો અલગ રંગ */
+        }
+
+        /* દીવાઓ માટેનું કન્ટેનર */
+        .diya-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px; /* દીવાઓ વચ્ચેનું અંતર */
+            padding: 20px;
+        }
+
+        /* એકલ દીવો */
+        .diya {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* મોબાઇલ પર બ્લુ હાઇલાઇટ દૂર કરે છે */
+        }
+        
+        /* કીબોર્ડ ફોકસ માટે */
+        .diya:focus {
+            outline: none; /* સ્ક્વેર (આઉટલાઇન) દૂર કર્યું */
+        }
+
+        /* દીવાનો આધાર (કોડિયું) */
+        .base {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 50px;
+            border-radius: 0 0 50px 50px; /* અર્ધ-ગોળાકાર */
+            box-shadow: inset 0 -5px 10px rgba(0,0,0,0.2);
+        }
+        
+        /* દરેક દીવા માટે અનન્ય રંગો */
+        .diya-container .diya:nth-child(1) .base {
+            background-color: #e01a4f; /* રૂબી રેડ */
+        }
+        .diya-container .diya:nth-child(2) .base {
+            background-color: #00a878; /* એમેરાલ્ડ ગ્રીન */
+        }
+        .diya-container .diya:nth-child(3) .base {
+            background-color: #3a40c0; /* સેફાયર બ્લુ */
+        }
+        .diya-container .diya:nth-child(4) .base {
+            background-color: #f050b0; /* બ્રાઇટ પિંક */
+        }
+        .diya-container .diya:nth-child(5) .base {
+            background-color: #7b2cbf; /* ડીપ પર્પલ */
+        }
+
+
+        /* દીવાની વાટ */
+        .base::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 12px;
+            background-color: #333; /* બળ્યા વગરની વાટ */
+            border-radius: 4px 4px 0 0;
+            transition: background-color 0.3s ease;
+        }
+
+        /* દીવાની જ્યોત (શરૂઆતમાં છુપાયેલી) */
+        .flame {
+            position: absolute;
+            bottom: 60px; /* વાટની બરાબર ઉપર */
+            left: 50%;
+            transform: translateX(-50%) scale(0); /* શરૂઆતમાં છુપાયેલ */
+            transform-origin: bottom center;
+            width: 20px;
+            height: 30px;
+            background-color: #ff0000; /* લાલ રંગ */
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* જ્યોતનો આકાર */
+            box-shadow: 0 0 10px #ff0000, /* લાલ શેડો */
+                        0 0 20px #ff0000,
+                        0 0 30px #e00000, /* ઘેરો લાલ */
+                        0 0 40px #e00000;
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        /* જ્યારે દીવો પ્રગટાવવામાં આવે (.lit ક્લાસ ઉમેરાય) */
+        .diya.lit .flame {
+            transform: translateX(-50%) scale(1); /* જ્યોત દેખાય છે */
+            opacity: 1;
+            /* જ્યોતના ઝબકારા માટે એનિમેશન */
+            animation: flicker 0.6s infinite alternate ease-in-out;
+        }
+
+        /* પ્રગટાવેલ દીવાની વાટનો રંગ બદલવો */
+        .diya.lit .base::before {
+            background-color: #ff0000; /* સળગતી વાટનો લાલ રંગ */
+            box-shadow: 0 0 5px #ff0000;
+        }
+
+        /* જ્યોત ઝબકવાનું એનિમેશન (Flicker Animation) */
+        @keyframes flicker {
+            0% {
+                transform: translateX(-50%) scaleY(1) scaleX(1);
+                opacity: 0.9;
+                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 30px #e00000;
+            }
+            50% {
+                transform: translateX(-52%) scaleY(0.95) scaleX(1.05);
+                opacity: 0.8;
+                box-shadow: 0 0 12px #ff0000, 0 0 25px #ff0000, 0 0 35px #e00000;
+            }
+            100% {
+                transform: translateX(-48%) scaleY(1.02) scaleX(0.98);
+                opacity: 1;
+                box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 32px #e00000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>પર્યાવરણને અનુકૂળ દિવાળી</h1>
+        <p>આ દિવાળી, પ્રદૂષણ નહીં, પ્રકાશ ફેલાવો. દીવા પ્રગટાવવા માટે તેના પર ક્લિક કરો.</p>
+    </header>
+
+    <main>
+        <div class="diya-container">
+            <!-- તમે ઈચ્છો તેટલા દીવા ઉમેરી શકો છો --><div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+            
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+            
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+
+            <div class="diya" role="button" tabindex="0" aria-label="દીવો પ્રગટાવો">
+                <div class="flame"></div>
+                <div class="base"></div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // જ્યારે ડોક્યુમેન્ટ લોડ થઈ જાય ત્યારે આ સ્ક્રિપ્ટ ચલાવો
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // બધા દીવાઓને પસંદ કરો
+            const diyas = document.querySelectorAll('.diya');
+
+            // દરેક દીવા પર ઈવેન્ટ લિસનર ઉમેરો
+            diyas.forEach(diya => {
+                
+                // દીવાને પ્રગટાવવા/ઓલવવા માટેનું ફંક્શન
+                function toggleLight() {
+                    diya.classList.toggle('lit'); // .lit ક્લાસ ઉમેરો અથવા દૂર કરો
+                }
+
+                // ક્લિક ઈવેન્ટ (માઉસ અથવા ટચ)
+                diya.addEventListener('click', toggleLight);
+
+                // કીબોર્ડ ઈવેન્ટ (Enter અથવા Space કી માટે)
+                diya.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault(); // ડિફોલ્ટ સ્кроલિંગ અટકાવો
+                        toggleLight();
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
+
+
+
